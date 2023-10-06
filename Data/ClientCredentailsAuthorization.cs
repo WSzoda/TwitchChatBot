@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace ShiraSodaBot
+namespace ShiraSodaBot.Data
 {
     public class ClientCredentailsAuthorization : IAuthorizationHandler
     {
@@ -18,14 +18,12 @@ namespace ShiraSodaBot
         public async Task<string> Authorize()
         {
             string client_id = _config["ApiSettings:client_id"];
-            Console.WriteLine(client_id);
             string client_secret = _config["ApiSettings:secret_id"];
-            Console.WriteLine(client_secret);
             string resultUrl = $"https://id.twitch.tv/oauth2/token?client_id={client_id}&client_secret={client_secret}&grant_type=client_credentials";
             HttpResponseMessage response = await _client.PostAsync(resultUrl, null);
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ToString();
+                return await response.Content.ReadAsStringAsync();
             }
             else
             {

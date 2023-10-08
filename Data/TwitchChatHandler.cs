@@ -36,6 +36,11 @@ namespace ShiraSodaBot.Data
                     Thread.Sleep(100);
                     continue;
                 }
+                if(message.Contains("PING"))
+                {
+                    PingTwitch();
+                    continue;
+                }
                 if (!message.Contains("PRIVMSG"))
                 {
                     Thread.Sleep(100);
@@ -44,15 +49,7 @@ namespace ShiraSodaBot.Data
                 break;
             }
 
-            int startingIndex = message.IndexOf(":") + 1;
-            int endingIndex = message.IndexOf("!");
-            int length = endingIndex - startingIndex;
-            string senderName = message.Substring(startingIndex, length);
-
-            startingIndex = message.IndexOf(":", 1) + 1;
-            string chatMessage = message.Substring(startingIndex);
-
-            return new ChatMessage { senderName = senderName, chatMessage = chatMessage };
+            return FormatMessage(message);
         }
 
         public string ReadTCP()
@@ -65,6 +62,25 @@ namespace ShiraSodaBot.Data
             {
                 return null;
             }
+        }
+
+        public ChatMessage FormatMessage(string message)
+        {
+            int startingIndex = message.IndexOf(":") + 1;
+            int endingIndex = message.IndexOf("!");
+            int length = endingIndex - startingIndex;
+            string senderName = message.Substring(startingIndex, length);
+
+            startingIndex = message.IndexOf(":", 1) + 1;
+            string chatMessage = message.Substring(startingIndex);
+
+            return new ChatMessage { senderName = senderName, chatMessage = chatMessage };
+        }
+
+        public void PingTwitch()
+        {
+            writer.WriteLine("PONG :tmi.twitch.tv");
+            writer.Flush();
         }
     }
 }

@@ -18,13 +18,15 @@ namespace ShiraMelonSoda
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            TwitchChatHandler twitchChat = new TwitchChatHandler(config["ApiSettings:oauth"], "cdawgva", "woworoo");
+            TwitchChatHandler twitchChat = new TwitchChatHandler(config["ApiSettings:oauth"], "shirahiko", "woworoo");
+            MessageAnalyzer messageAnalyzer = new MessageAnalyzer(twitchChat);
 
             string message;
             while(true)
             {
                 message = twitchChat.ReadMessage().chatMessage;
                 Console.WriteLine(message);
+                messageAnalyzer.AnalyzeMessage(message);
             }
         }
     }

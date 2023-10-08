@@ -10,19 +10,23 @@ namespace ShiraSodaBot.Data
 {
     public class TwitchChatHandler
     {
-        public StreamReader reader;
-        public StreamWriter writer;
+        private StreamReader _reader;
+        private StreamWriter _writer;
+        private string _channelName;
+
         public TwitchChatHandler(string token, string channelName, string ownerName)
         {
+            _channelName = channelName;
+
             TcpClient client = new TcpClient("irc.chat.twitch.tv", 6667);
 
-            reader = new StreamReader(client.GetStream());
-            writer = new StreamWriter(client.GetStream());
+            _reader = new StreamReader(client.GetStream());
+            _writer = new StreamWriter(client.GetStream());
 
-            writer.WriteLine("PASS oauth:" + token);
-            writer.WriteLine("NICK " + ownerName);
-            writer.WriteLine("JOIN #" + channelName);
-            writer.Flush();
+            _writer.WriteLine("PASS oauth:" + token);
+            _writer.WriteLine("NICK " + ownerName);
+            _writer.WriteLine("JOIN #" + channelName);
+            _writer.Flush();
         }
 
         public ChatMessage ReadMessage()
@@ -56,7 +60,7 @@ namespace ShiraSodaBot.Data
         {
             try
             {
-                return reader.ReadLine();
+                return _reader.ReadLine();
             }
             catch
             {
@@ -79,8 +83,14 @@ namespace ShiraSodaBot.Data
 
         public void PingTwitch()
         {
-            writer.WriteLine("PONG :tmi.twitch.tv");
-            writer.Flush();
+            _writer.WriteLine("PONG :tmi.twitch.tv");
+            _writer.Flush();
+        }
+
+        public void SendMessage(string message)
+        {
+            _writer.WriteLine("PRIVMSG #" + _channelName + " :" + message);
+            _writer.Flush();
         }
     }
 }

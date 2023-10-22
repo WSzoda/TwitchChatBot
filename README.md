@@ -1,4 +1,4 @@
-# Twitch IRC Message Counter
+# Twitch IRC Chat Bot
 ## Description
 This program is a Twitch IRC bot built with .NET 8.0 that listens to messages on a Twitch channel and performs specific actions when the following conditions are met:
 
